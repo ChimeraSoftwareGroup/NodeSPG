@@ -1,0 +1,25 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "node testDB.js",
+    "server": "node server.js",
+    "random": "node ./app/handler.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "file-system": "^2.2.2",
+    "http": "^0.0.1-security",
+    "math-random": "^2.0.1",
+    "pg": "^8.9.0",
+    "require": "^2.4.20"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
