@@ -9,14 +9,15 @@ async function getGames(request, response) {
 
 async function addRoom(request, response) {
     password = ""
-    room = ["azerty"]
-    while (room != []) {
+    length = -1;
+    while (length != 0) {
         password =  createPassword();
-        room = db.getRoomByPassword(password)
+        room = await db.getRoomByPassword(password)
+        length = room.rows.length
     } 
     const { name } = request.body;
     results = await db.addRoomDB(name,password)  
-    response.status(201).send(`Room added with name: ${name}`);
+    response.status(200).json(results.rows);
 }
 
 async function deleteRoom(request, response) {
