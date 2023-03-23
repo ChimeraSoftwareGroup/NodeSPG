@@ -23,6 +23,18 @@ const addRoomDB = (name, password) => {
   ]);
 };
 
+// Create a image
+const addImageDB = (link) => {
+    return pool.query(`INSERT INTO picture (link, name, id) VALUES ($1, $2, $3)`,
+        [link, name, id]);
+}
+
+// Create a player
+const addPlayerDB = (name, id_picture) => {
+    return pool.query(`INSERT INTO player (name, id_picture, id, email, password, bank) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [name, id_picture, id, password, bank, email]);
+}
+
 // Delete a room
 const deleteRoomDB = (id) => {
   return pool.query(
@@ -76,7 +88,7 @@ const joinRoomDB = (id_player, id_room) => {
     ($1, $2, (case when exists (select * from player_room) then false else true end))`,
     [id_player, id_room]
   );
-  
+
 };
 
 // Export result request
@@ -89,4 +101,6 @@ module.exports = {
   joinRoomDB,
   getRoomByPassword,
   leaveRoomDB,
+  addPlayerDB,
+  addImageDB,
 };
