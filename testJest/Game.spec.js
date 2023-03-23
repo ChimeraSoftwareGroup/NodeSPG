@@ -4,7 +4,7 @@ require("dotenv").config();
 
 // Initialize all variable for the DB connection
 describe("PostgreSQL Connection", () => {
-  test("should connect to PostgreSQL", async () => {
+  test("Will create/check/delete a game", async () => {
     const Pool = require("pg").Pool;
     const pool = new Pool({
       user: process.env.DB_USER,
