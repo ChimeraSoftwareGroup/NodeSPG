@@ -6,7 +6,10 @@
   "scripts": {
     "server": "node server.js",
     "random": "node ./app/handler.js",
-    "test": "jest ./testJest"
+    "test": "jest ./testJest",
+    "test-game": "jest ./testJest/game.spec.js",
+    "test-room": "jest ./testJest/room.spec.js",
+    "test-join": "jest ./testJest/joinRoom.spec.js"
   },
   "author": "",
   "license": "ISC",
