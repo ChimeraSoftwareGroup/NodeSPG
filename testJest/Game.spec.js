@@ -26,7 +26,7 @@ describe("PostgreSQL Connection", () => {
       );
       const checkGame = await client.query(`
       SELECT name FROM game WHERE name = 'cyberpunk'`);
-      expect((check.name = "cyberpunk"));
+      expect((checkGame.name = "cyberpunk"));
       const removeGame = await client.query(`
       DELETE FROM game WHERE name = 'cyberpunk'`);
     } finally {
