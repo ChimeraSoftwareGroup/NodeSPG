@@ -21,14 +21,14 @@ describe("PostgreSQL Connection", () => {
       // The will add a game
       const insertGame = await client.query(
         `
-      INSERT INTO game (name) VALUES ($1)`,
-        ["cyberpunk"]
+      INSERT INTO game (id, name) VALUES ($1, $2)`,
+        [-1, "cyberpunk"]
       );
       const checkGame = await client.query(`
       SELECT name FROM game WHERE name = 'cyberpunk'`);
       expect((checkGame.name = "cyberpunk"));
       const removeGame = await client.query(`
-      DELETE FROM game WHERE name = 'cyberpunk'`);
+      DELETE FROM game WHERE id = -1`);
     } finally {
       // Close the connection
       client.release();

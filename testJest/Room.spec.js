@@ -20,11 +20,14 @@ describe("PostgreSQL Connection", () => {
       client = await pool.connect();
       // The will create a room with defined values
       const insertRoom = await client.query(
-        `INSERT INTO room (name, password) VALUES ($1, $2)`,
-        ["testname", "1234"]
+        `INSERT INTO room (id, name, password) VALUES ($1, $2, $3)`,
+        [-1, "testNameRoom", "1234"]
       );
+      const checkRoom = await client.query(`
+      SELECT name FROM room WHERE name = 'testNameRoom'`);
+      expect((checkRoom.name = "testNameRoom"));
       const removeRooms = await client.query(`
-      DELETE FROM room WHERE name = 'testname'`);
+      DELETE FROM room WHERE id = -1`);
     } finally {
       // Close the connection
       client.release();
