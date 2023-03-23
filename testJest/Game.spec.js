@@ -19,15 +19,15 @@ describe("PostgreSQL Connection", () => {
       // Will connect to the DB
       client = await pool.connect();
       // The will add a game
-      const insert = await client.query(
+      const insertGame = await client.query(
         `
       INSERT INTO game (name) VALUES ($1)`,
         ["cyberpunk"]
       );
-      const check = await client.query(`
+      const checkGame = await client.query(`
       SELECT name FROM game WHERE name = 'cyberpunk'`);
       expect((check.name = "cyberpunk"));
-      const remove = await client.query(`
+      const removeGame = await client.query(`
       DELETE FROM game WHERE name = 'cyberpunk'`);
     } finally {
       // Close the connection
