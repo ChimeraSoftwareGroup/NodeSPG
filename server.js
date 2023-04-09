@@ -18,13 +18,13 @@ app.get("/", (request, response) => {
 });
 
 // Call api
-app.get("/games", controllers.getGames);
-app.get("/room/:id/players", controllers.getAllPlayerInRoom);
-app.post("/room", controllers.addRoom);
-app.post("/room/join", controllers.joinRoom);
-app.put("/room/:id", controllers.updateRoom);
-app.delete("/room/:id", controllers.deleteRoom);
-app.delete("/room/:idRoom/players/:idPlayer/leave", controllers.leaveRoom);
+app.get("/games", (req, res) =>{ apiResponse(req,res, controllers.getGames); } );
+app.get("/room/:id/players", (req, res) =>{ apiResponse(req,res, controllers.getAllPlayerInRoom); } );
+app.post("/room", (req, res) =>{ apiResponse(req,res, controllers.addRoom); } );
+app.post("/room/join", (req, res) =>{ apiResponse(req,res, controllers.joinRoom); } );
+app.put("/room/:id", (req, res) =>{ apiResponse(req,res, controllers.updateRoom); } );
+app.delete("/room/:id", (req, res) =>{ apiResponse(req,res, controllers.deleteRoom); } );
+app.delete("/room/:idRoom/players/:idPlayer/leave", (req, res) =>{ apiResponse(req,res, controllers.leaveRoom); } );
 
 // Where the server is running
 app.listen(port, () => {
