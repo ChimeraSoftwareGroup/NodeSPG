@@ -1,4 +1,3 @@
-test pour une room qui existe pas = 1
 join room et si n'existe pas = 2
 leave room et si n'existe pas = 2
 delete room et si n'existe pas = 2

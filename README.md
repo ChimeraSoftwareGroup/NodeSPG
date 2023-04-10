@@ -25,5 +25,5 @@ It will run on port 3000 : http://localhost:3000/
 ### In the nodejs directory run :
 #### All your test should be in : `./testJest`
 #### Launch all the unitary test : `npm run test`
-#### Your you can launch one of them using : `npm test ` + `testName.spec.js`
-#### You can change all those cmd in :  `package.json`
+#### Your you can launch one of them using : `npm test ` + `yourTestName.spec.js`
+#### You can change all those cmd in : `package.json`
