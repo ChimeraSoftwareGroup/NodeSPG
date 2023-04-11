@@ -4,8 +4,8 @@ function createPassword() {
   return password;
 }
 
-function returnApi(request, response, callBack){
-  const test = callBack(request);
+async function returnApi(request, response, callBack){
+  const results = await callBack(request);
   response.status(200).json(results);
 }
 

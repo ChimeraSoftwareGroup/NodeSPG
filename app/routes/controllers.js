@@ -5,7 +5,7 @@ require("../handler");
 // Return all games
 async function getGames(request) {
   results = await db.getGamesDB();
-  return results.rows
+  return results.rows;
 }
 
 // Return The added rooms's id

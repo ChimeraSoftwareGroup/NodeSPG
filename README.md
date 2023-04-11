@@ -6,7 +6,6 @@
 #### Install all the dependencies : `npm i`
 #### Resolve potential security problem : `$ npm audit fix --force`
 
-
 ### Create your env file to stock your db login :
 #### Create a file .env in the project root
 #### In this file copy/paste : 
@@ -18,6 +17,7 @@ DB_PASSWORD = 'YOUR_PASSWORD'
 
 ### In the nodejs directory run :
 ####  Launch the node server : `npm run server`
+#### The server will refresh whenever any change appears, because we're using nodemon :
 It will run on port 3000 : http://localhost:3000/
 
 ## Launch Jest Test
