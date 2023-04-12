@@ -1,5 +1,4 @@
 brian
-join room et si n'existe pas = 2
 leave room et si n'existe pas = 2
 kévin
 update room et si n'existe pas = 2

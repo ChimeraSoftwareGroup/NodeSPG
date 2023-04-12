@@ -62,7 +62,7 @@ async function joinRoom(request) {
     results = await db.joinRoomDB(id_player, dataRoom.rows[0].id);
     return results;
   } else {
-    return results;
+    return Error ;
   }
 }
 

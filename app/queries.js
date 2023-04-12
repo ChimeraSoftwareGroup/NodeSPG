@@ -76,7 +76,6 @@ const joinRoomDB = (id_player, id_room) => {
     ($1, $2, (case when exists (select * from player_room) then false else true end))`,
     [id_player, id_room]
   );
-
 };
 
 // Export result request
