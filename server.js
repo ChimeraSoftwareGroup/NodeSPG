@@ -38,12 +38,26 @@ const server = app.listen(port, () => {
 
 const io = new Server(server);
 
+var users = {};
+
 io.on("connection", (socket) => {
-    console.log("a user connected");
-    socket.on("disconnect", () => {
-        console.log("user disconnected");
+    users[socket.id] = "";
+
+    console.log(`+ a user (${socket.id}) connected`);
+
+    socket.on("disconnect", (e) => {
+        console.log("- user disconnected: " + users[socket.id]);
+        io.emit("user leave", users[socket.id]);
     });
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
+
+    //Will be received right after the connection, the init the username who just join
+    socket.on("initName", (user) => {
+        users[socket.id] = user.name;
+        console.log("| Define as", users[socket.id]);
+        io.emit("user join", users[socket.id]);
+    });
+
+    socket.on("start game", (msg) => {
+        io.emit("start game", msg);
     });
 });
