@@ -1,5 +1,9 @@
 const unitTest = require("../app/routes/controllers");
 
+// id_player that exist -99 / that don't exist -98
+// idRoom that exist -99
+// password that exist -1234 / that don't exist -1235
+
 describe("add a player in a room that exist and make him leave", function() {
     test('add a player in a room that exist and make him leave', async () => {
       const joinRoom = await unitTest.joinRoom({body:{id_player:-99, password:-1234}}, true)
@@ -26,3 +30,4 @@ describe("add an existante player in a room that do not exist", function() {
           expect(joinRoom).toThrowError;
     });
   });
+  
