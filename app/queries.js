@@ -17,7 +17,7 @@ const getGamesDB = () => {
 
 // Create a room
 const addRoomDB = (name, password) => {
-  return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2)`, [
+  return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id`, [
     name,
     password,
   ]);
@@ -76,7 +76,6 @@ const joinRoomDB = (id_player, id_room) => {
     ($1, $2, (case when exists (select * from player_room) then false else true end))`,
     [id_player, id_room]
   );
-
 };
 
 // Export result request
@@ -89,5 +88,4 @@ module.exports = {
   joinRoomDB,
   getRoomByPassword,
   leaveRoomDB,
-
 };

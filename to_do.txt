@@ -1,0 +1,3 @@
+kévin
+update room et si n'existe pas = 2
+get all player in a room et si n'existe pas = 2 

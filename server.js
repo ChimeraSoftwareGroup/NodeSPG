@@ -5,6 +5,7 @@ const app = express();
 const port = 3000;
 const controllers = require("./app/routes/controllers");
 const { Server } = require("socket.io");
+const handler = require("./app/handler.js");
 
 app.use(bodyParser.json());
 app.use(
@@ -19,13 +20,27 @@ app.get("/", (request, response) => {
 });
 
 // Call api
-app.get("/games", controllers.getGames);
-app.get("/room/:id/players", controllers.getAllPlayerInRoom);
-app.post("/room", controllers.addRoom);
-app.post("/room/join", controllers.joinRoom);
-app.put("/room/:id", controllers.updateRoom);
-app.delete("/room/:id", controllers.deleteRoom);
-app.delete("/room/:idRoom/players/:idPlayer/leave", controllers.leaveRoom);
+app.get("/games", (req, res) => {
+    handler.returnApi(req, res, controllers.getGames);
+});
+app.get("/room/:id/players", (req, res) => {
+    handler.returnApi(req, res, controllers.getAllPlayerInRoom);
+});
+app.post("/room", (req, res) => {
+    handler.returnApi(req, res, controllers.addRoom);
+});
+app.post("/room/join", (req, res) => {
+    handler.returnApi(req, res, controllers.joinRoom);
+});
+app.put("/room/:id", (req, res) => {
+    handler.returnApi(req, res, controllers.updateRoom);
+});
+app.delete("/room/:id", (req, res) => {
+    handler.returnApi(req, res, controllers.deleteRoom);
+});
+app.delete("/room/:idRoom/players/:idPlayer/leave", (req, res) => {
+    handler.returnApi(req, res, controllers.leaveRoom);
+});
 
 app.get("/socket", (req, res) => {
     res.sendFile(__dirname + "/index.html");

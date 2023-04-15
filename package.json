@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "server": "node server.js",
-    "testAll": "jest ./testJest",
+    "server": "nodemon ./server.js",
     "test": "jest"
   },
   "author": "",

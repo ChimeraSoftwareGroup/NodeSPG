@@ -4,7 +4,13 @@ function createPassword() {
   return password;
 }
 
+async function returnApi(request, response, callBack){
+  const results = await callBack(request);
+  response.status(200).json(results);
+}
+
 // Return the password
 module.exports = {
   createPassword,
+  returnApi
 };
