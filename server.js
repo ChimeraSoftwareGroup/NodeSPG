@@ -23,6 +23,9 @@ app.get("/", (request, response) => {
 app.get("/games", (req, res) => {
     handler.returnApi(req, res, controllers.getGames);
 });
+app.get("/games/random", (req, res) => {
+    res.status(500).send({ id: 2, name: "test" });
+});
 app.get("/room/:id/players", (req, res) => {
     handler.returnApi(req, res, controllers.getAllPlayerInRoom);
 });
