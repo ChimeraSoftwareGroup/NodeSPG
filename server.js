@@ -35,6 +35,13 @@ app.post("/room", (req, res) => {
 app.post("/room/join", (req, res) => {
     handler.returnApi(req, res, controllers.joinRoom);
 });
+
+//Debug for Unity -- Need improvement
+app.post("/room/password", (req, res) => {
+    handler.returnApi(req, res, () => {
+        return true;
+    });
+});
 app.put("/room/:id", (req, res) => {
     handler.returnApi(req, res, controllers.updateRoom);
 });
@@ -59,23 +66,25 @@ const io = new Server(server);
 var users = {};
 
 io.on("connection", (socket) => {
-    users[socket.id] = "";
+    users[socket.id] = { name: socket.id };
 
     console.log(`+ a user (${socket.id}) connected`);
 
     socket.on("disconnect", (e) => {
-        console.log("- user disconnected: " + users[socket.id]);
+        console.log("- user disconnected: " + users[socket.id].name);
         io.emit("user leave", users[socket.id]);
     });
 
     //Will be received right after the connection, the init the username who just join
+    //--Not used in Unity
     socket.on("initName", (user) => {
-        users[socket.id] = user.name;
+        users[socket.id].name = user.name;
         console.log("| Define as", users[socket.id]);
         io.emit("user join", users[socket.id]);
     });
 
     socket.on("start game", (msg) => {
+        console.log("|", users[socket.id].name, ":", msg);
         io.emit("start game", msg);
     });
 });
