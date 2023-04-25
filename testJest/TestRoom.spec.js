@@ -5,7 +5,7 @@ const unitTest = require("../app/routes/controllers");
 describe("add and delete room that exist", function () {
     test("add and delete room", async () => {
         const addroom = await unitTest.addRoom({ body: { name: "roomTest" } });
-        expect(addroom.rowCount).toBe(1);
+        expect(addroom.room.rowCount).toBe(1);
         expect(
             await unitTest.deleteRoom({ params: { id: addroom.rows[0].id } })
         ).toBe(1);

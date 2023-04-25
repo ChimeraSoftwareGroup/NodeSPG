@@ -1,4 +1,4 @@
-const { createPassword } = require("../handler");
+const { createPassword, countGames } = require("../handler");
 const db = require("../queries");
 require("../handler");
 
@@ -10,20 +10,20 @@ async function getGames(request) {
 
 // Return The added rooms's id
 async function addRoom(request) {
-    password = "";
-    length = -1;
+    let password = "";
+    let length = -1;
     //check if another room's password exist
     while (length != 0) {
         // Will call the function to create a random password
         password = createPassword();
-        room = await db.getRoomByPassword(password);
+        let room = await db.getRoomByPassword(password);
         length = room.rows.length;
     }
     // Will create the room
     const { name, minIDGame, manIDGame, nbGame } = request.body;
-    countGames(minIDGame, manIDGame, nbGame);
-    results = await db.addRoomDB(name, password);
-    return results;
+    const randomGames = countGames(minIDGame, manIDGame, nbGame);
+    const results = await db.addRoomDB(name, password);
+    return { room: results, gameList: randomGames };
 }
 
 // Will delete a room by id
