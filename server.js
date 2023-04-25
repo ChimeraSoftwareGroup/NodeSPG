@@ -48,8 +48,12 @@ app.put("/room/:id", (req, res) => {
 app.delete("/room/:id", (req, res) => {
     handler.returnApi(req, res, controllers.deleteRoom);
 });
-app.delete("/room/:idRoom/players/:idPlayer/leave", (req, res) => {
+app.delete("/room/players/:idPlayer/leave", (req, res) => {
     handler.returnApi(req, res, controllers.leaveRoom);
+});
+
+app.delete("/room/players/:idRoom/all", (req, res) => {
+    handler.returnApi(req, res, controllers.kickAll);
 });
 
 app.get("/socket", (req, res) => {
@@ -67,12 +71,18 @@ var users = {};
 
 io.on("connection", (socket) => {
     users[socket.id] = { name: socket.id };
-
+    io.emit("player join", "");
     console.log(`+ a user (${socket.id}) connected`);
 
     socket.on("disconnect", (e) => {
+        results = controllers.leaveRoom({params:{idPlayer: socket.id}})
+        isHost = results.rows[0].is_host;
+        idRoomToDelete = results.rows[0].id_room;
         console.log("- user disconnected: " + users[socket.id].name);
-        io.emit("user leave", users[socket.id]);
+        io.emit("player quit", "");
+        if(results.rows[0].is_host){
+            controllers.kickAll({params:{idRoom: idRoomToDelete}})
+        }
     });
 
     //Will be received right after the connection, the init the username who just join
@@ -83,8 +93,36 @@ io.on("connection", (socket) => {
         io.emit("user join", users[socket.id]);
     });
 
-    socket.on("start game", (msg) => {
-        console.log("|", users[socket.id].name, ":", msg);
-        io.emit("start game", msg);
+    socket.on("start game", (data) => {
+        console.log("|", users[socket.id].name, ":", data);
+        io.emit("start game", data);
+    });
+
+    socket.on("quit room", (user) => {
+        controllers.leaveRoom({params:{idPlayer: socket.id}}, "")
+        io.emit("player quit", "");
+        results = controllers.leaveRoom({params:{idPlayer: socket.id}})
+        isHost = results.rows[0].is_host;
+        idRoomToDelete = results.rows[0].id_room;
+        console.log("- user disconnected: " + users[socket.id].name);
+        if(results.rows[0].is_host){
+            console.log("|", users[socket.id].name, ":", user);
+            controllers.kickAll({params:{idRoom: idRoomToDelete}})
+            io.emit("quit room", user);
+        }
+    });
+
+    socket.on("ending game", (user) => {
+
+        
+        // stocker les valeur pv/nmb de mini jeu (soitr new tables ou deja dans player)
+        // récuperer le score du user et les mettre en DB
+        // si (l'avant dernier joueur (length) && nmb total de vie que le joueur a = 0) || (joueur actuel est le dernier)
+        //      for(user id on lui donne son score personnel)
+                // io.emit("end game", user);
+        // else = nothing
+        // 
+        console.log("|", users[socket.id].name, ":", user);
+        io.emit("ending game", user);
     });
 });

@@ -60,6 +60,14 @@
         socket.on('user join', function(username){
             createMessage(`<span style='color:green;'> ${username} just join the chat </span>`);
         });
+        
+        socket.on('quit room', function(username){
+            createMessage(`<span style='color:green;'> ${username} just left the game </span>`);
+        });
+
+        socket.on('ending game', function(username){
+            createMessage(`<span style='color:green;'> ${username} just left the game </span>`);
+        });
 
     </script>
 </html>
