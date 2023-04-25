@@ -19,7 +19,6 @@ describe("add an inexistante player in a room that exist", function() {
         const joinRoom = await unitTest.joinRoom({body:{id_player:-98, password:-1234}}, true)
         expect(joinRoom).toThrowError;
       } catch (error) {
-        console.log(error.detail)
       }
   });
 });
