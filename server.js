@@ -41,6 +41,9 @@ app.get("/data/:id/players", (req, res) => {
 app.post("/data/:id/players", (req, res) => {
     handler.returnApi(req, res, controllers.postInfoPlayer);
 });
+app.get("/randomGames", (req, res) => {
+    handler.returnApi(req, res, controllers.randomGames);
+});
 
 //Debug for Unity -- Need improvement
 app.post("/room/password", (req, res) => {
@@ -77,17 +80,17 @@ var users = {};
 
 io.on("connection", (socket) => {
     users[socket.id] = { name: socket.id };
-    io.emit("player join", "");
+    socket.broadcast.emit("player join", "");
     console.log(`+ a user (${socket.id}) connected`);
 
     socket.on("disconnect", (e) => {
-        results = controllers.leaveRoom({params:{idPlayer: socket.id}})
+        results = controllers.leaveRoom({ params: { idPlayer: socket.id } });
         isHost = results.rows[0].is_host;
         idRoomToDelete = results.rows[0].id_room;
         console.log("- user disconnected: " + users[socket.id].name);
-        io.emit("player quit", "");
-        if(results.rows[0].is_host){
-            controllers.kickAll({params:{idRoom: idRoomToDelete}})
+        socket.broadcast.emit("player quit", "");
+        if (results.rows[0].is_host) {
+            controllers.kickAll({ params: { idRoom: idRoomToDelete } });
         }
     });
 
@@ -96,39 +99,65 @@ io.on("connection", (socket) => {
     socket.on("initName", (user) => {
         users[socket.id].name = user.name;
         console.log("| Define as", users[socket.id]);
-        io.emit("user join", users[socket.id]);
+        socket.broadcast.emit("user join", users[socket.id]);
     });
 
     socket.on("start game", (data) => {
         console.log("|", users[socket.id].name, ":", data);
-        io.emit("start game", data);
+        socket.broadcast.emit("start game", data);
     });
 
+    //Check if a player left the room
+    //If the player was an host, make everybody leave
     socket.on("quit room", (user) => {
-        controllers.leaveRoom({params:{idPlayer: socket.id}}, "")
-        io.emit("player quit", "");
-        results = controllers.leaveRoom({params:{idPlayer: socket.id}})
-        isHost = results.rows[0].is_host;
-        idRoomToDelete = results.rows[0].id_room;
+        controllers.leaveRoom({ params: { idPlayer: socket.id } }, "");
+        socket.broadcast.emit("player quit");
+        let results = controllers.leaveRoom({
+            params: { idPlayer: socket.id },
+        });
+        let isHost = results.rows[0].is_host;
+        let idRoomToDelete = results.rows[0].id_room;
         console.log("- user disconnected: " + users[socket.id].name);
-        if(results.rows[0].is_host){
+        if (isHost) {
             console.log("|", users[socket.id].name, ":", user);
-            controllers.kickAll({params:{idRoom: idRoomToDelete}})
-            io.emit("quit room", user);
+            controllers.kickAll({ params: { idRoom: idRoomToDelete } });
+            socket.broadcast.emit("quit room", user);
         }
     });
 
+    //Get all values from socket
+    //Get all player in one room with the function
+    //Define position
+    //Post the information in the DB
+    //Send the last data from player 2
+    //Return all ending information to the player
     socket.on("ending game", (user) => {
-
-        
-        // stocker les valeur pv/nmb de mini jeu (soitr new tables ou deja dans player)
-        // récuperer le score du user et les mettre en DB
-        // si (l'avant dernier joueur (length) && nmb total de vie que le joueur a = 0) || (joueur actuel est le dernier)
-        //      for(user id on lui donne son score personnel)
-                // io.emit("end game", user);
-        // else = nothing
-        // 
-        console.log("|", users[socket.id].name, ":", user);
-        io.emit("ending game", user);
+        let pv_left = user.pv_left;
+        let nmb_minigame = user.nmb_minigame;
+        let listIdPlayer = controllers.getAllOtherPlayerInRoom({
+            params: { id_player },
+        });
+        let position = handler.countNull(listIdPlayer);
+        let results = controllers.postInfoPlayer({
+            params: { pv_left, nmb_minigame, position },
+        });
+        if (position == 2 && pv_left == 0) {
+            socket.broadcast.emit("send last data");
+        } else if (position == 1) {
+            listIdPlayer = controllers.getAllOtherPlayerInRoom({
+                params: { id_player },
+            });
+            for (let index = 0; index < listIdPlayer.length; index++) {
+                const element = listIdPlayer[index];
+                io.to(socketId).emit("endgame", {
+                    user_score: {
+                        minigame: element.nmb_minigame ?? nmb_minigame,
+                        pv_left: element.pv_left ?? pv_left,
+                    },
+                    user_position: element.position ?? position,
+                    highscore: user,
+                });
+            }
+        }
     });
 });
