@@ -86,6 +86,22 @@ const kickAllDB = (id_room) => {
   );
 };
 
+const getInfoPlayerDB = (id_room) => {
+  return pool.query(
+  `DELETE FROM player_room as PR 
+  WHERE PR.id_room = $1`,
+  [id_room]
+);
+};
+
+const postInfoPlayerDB = (id_room) => {
+  return pool.query(
+  `DELETE FROM player_room as PR 
+  WHERE PR.id_room = $1`,
+  [id_room]
+);
+};
+
 // Export result request
 module.exports = {
   getGamesDB,
@@ -96,5 +112,7 @@ module.exports = {
   joinRoomDB,
   getRoomByPassword,
   leaveRoomDB,
-  kickAllDB
+  kickAllDB,
+  getInfoPlayerDB,
+  postInfoPlayerDB
 };

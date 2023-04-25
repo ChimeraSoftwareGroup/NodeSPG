@@ -73,6 +73,18 @@ async function kickAll(request) {
   return results;
 }
 
+async function getInfoPlayer(request) {
+  const { idRoom } = request.params;
+  results = await db.getInfoPlayerDB(idRoom);
+  return results;
+}
+
+async function postInfoPlayer(request) {
+  const { idRoom } = request.params;
+  results = await db.putInfoPlayerDB(idRoom);
+  return results;
+}
+
 module.exports = {
   getGames,
   addRoom,
@@ -81,5 +93,7 @@ module.exports = {
   getAllPlayerInRoom,
   joinRoom,
   leaveRoom,
-  kickAll
+  kickAll,
+  getInfoPlayer,
+  postInfoPlayer
 };

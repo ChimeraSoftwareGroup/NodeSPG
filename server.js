@@ -35,6 +35,12 @@ app.post("/room", (req, res) => {
 app.post("/room/join", (req, res) => {
     handler.returnApi(req, res, controllers.joinRoom);
 });
+app.get("/data/:id/players", (req, res) => {
+    handler.returnApi(req, res, controllers.getInfoPlayer);
+});
+app.post("/data/:id/players", (req, res) => {
+    handler.returnApi(req, res, controllers.postInfoPlayer);
+});
 
 //Debug for Unity -- Need improvement
 app.post("/room/password", (req, res) => {
