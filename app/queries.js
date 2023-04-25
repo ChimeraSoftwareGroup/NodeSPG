@@ -53,11 +53,11 @@ const getAllPlayerInRoomDB = (id) => {
 
 // Leaving a room as a player
 // Delete the a player in a specific room
-const leaveRoomDB = (id_room, id_player) => {
+const leaveRoomDB = (id_player) => {
   return pool.query(
     `DELETE FROM player_room as PR 
-        WHERE PR.id_room = $1 AND PR.id_player = $2`,
-    [id_room, id_player]
+        WHERE PR.id_player = $1 RETURNING is_host, id_room`,
+    [id_player]
   );
 };
 
@@ -78,6 +78,14 @@ const joinRoomDB = (id_player, id_room) => {
   );
 };
 
+const kickAllDB = (id_room) => {
+    return pool.query(
+    `DELETE FROM player_room as PR 
+    WHERE PR.id_room = $1`,
+    [id_room]
+  );
+};
+
 // Export result request
 module.exports = {
   getGamesDB,
@@ -88,4 +96,5 @@ module.exports = {
   joinRoomDB,
   getRoomByPassword,
   leaveRoomDB,
+  kickAllDB
 };

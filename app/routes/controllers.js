@@ -49,8 +49,9 @@ async function getAllPlayerInRoom(request) {
 
 // Will deleted a player of a room
 async function leaveRoom(request) {
-  const { idPlayer, idRoom } = request.params;
-  results = await db.leaveRoomDB(idPlayer, idRoom);
+  const { idPlayer } = request.params;
+  results = await db.leaveRoomDB(idPlayer);
+  console.log(results);
   return results;
 }
 
@@ -65,6 +66,12 @@ async function joinRoom(request) {
     return Error ;
   }
 }
+// Will deleted all player of a room
+async function kickAll(request) {
+  const { idRoom } = request.params;
+  results = await db.kickAllDB(idRoom);
+  return results;
+}
 
 module.exports = {
   getGames,
@@ -74,4 +81,5 @@ module.exports = {
   getAllPlayerInRoom,
   joinRoom,
   leaveRoom,
+  kickAll
 };
