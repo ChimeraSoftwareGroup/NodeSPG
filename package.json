@@ -16,10 +16,11 @@
         "file-system": "^1.2.2",
         "http": "^0.0.1-security",
         "math-random": "^2.0.1",
+        "nodemon": "^2.0.22",
         "pg": "^8.9.0",
         "require": "^0.4.4",
         "socket.io": "^4.6.1",
-        "nodemon": "^2.0.22"
+        "socket.io-client": "^4.6.1"
     },
     "devDependencies": {
         "@types/jest": "^29.5.0",
