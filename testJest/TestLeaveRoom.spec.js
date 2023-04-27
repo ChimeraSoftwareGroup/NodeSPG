@@ -6,7 +6,7 @@ const unitTest = require("../app/routes/controllers");
 describe("Make a player leave a room that exist", function () {
   test("Make a player leave a room that exist", async () => {
     const leaveRoom = await unitTest.leaveRoom(
-      { params: { idPlayer: -999, idRoom: -999 } },
+      { params: { idPlayer: -999} },
       true
     );
     expect(leaveRoom.rowCount).toBe(1);
@@ -18,20 +18,10 @@ describe("Make a player leave a room that exist", function () {
   });
 });
 
-describe("Make a player leave a room that do not exist", function () {
-  test("Make a player leave a room that do not exist", async () => {
-    const leaveRoom = await unitTest.leaveRoom(
-      { params: { idPlayer: -999, idRoom: -789 } },
-      true
-    );
-    expect(leaveRoom.rowCount).toBe(0);
-  });
-});
-
 describe("Make an inexistante player leave a room that exist", function () {
   test("Make an inexistante player leave a room that exist", async () => {
     const leaveRoom = await unitTest.leaveRoom(
-      { params: { idPlayer: -789, idRoom: -999 } },
+      { params: { idPlayer: -789} },
       true
     );
     expect(leaveRoom.rowCount).toBe(0);

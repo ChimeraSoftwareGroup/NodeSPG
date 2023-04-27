@@ -7,11 +7,10 @@ describe("add and delete room that exist", function () {
         const addroom = await unitTest.addRoom({ body: { name: "roomTest" } });
         expect(addroom.room.rowCount).toBe(1);
         expect(
-            await unitTest.deleteRoom({ params: { id: addroom.rows[0].id } })
+            await unitTest.deleteRoom({ params: { id: addroom.room.rows[0].id } })
         ).toBe(1);
     });
 });
-
 describe("delete room that don't exist", function () {
     test("delete room", async () => {
         expect(await unitTest.deleteRoom({ params: { id: -9999 } })).toBe(0);

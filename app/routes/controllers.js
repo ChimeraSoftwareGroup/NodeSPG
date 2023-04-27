@@ -52,7 +52,6 @@ async function getAllPlayerInRoom(request) {
 async function leaveRoom(request) {
     const { idPlayer } = request.params;
     results = await db.leaveRoomDB(idPlayer);
-    console.log(results);
     return results;
 }
 
