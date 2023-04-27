@@ -38,8 +38,6 @@
         socket.on("connect", () => {
             console.log("this user connect");
             id = socket.id;
-            //Init the name of the front user
-            socket.emit("initName", {name: "USER "+ id});
         });
 
         form.addEventListener('submit', function(e) {
