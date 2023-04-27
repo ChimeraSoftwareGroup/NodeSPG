@@ -6,6 +6,7 @@ const port = 3000;
 const controllers = require("./app/routes/controllers");
 const { Server } = require("socket.io");
 const handler = require("./app/handler.js");
+const queries = require("./app/queries.js");
 
 app.use(bodyParser.json());
 app.use(
@@ -80,18 +81,22 @@ var users = {};
 
 io.on("connection", (socket) => {
     users[socket.id] = { name: socket.id };
-    socket.broadcast.emit("player join");
     console.log(`+ a user (${socket.id}) connected`);
 
-    socket.on("disconnect", (e) => {
-        results = controllers.leaveRoom({ params: { idPlayer: socket.id } });
-        isHost = results.rows[0].is_host;
-        idRoomToDelete = results.rows[0].id_room;
+    socket.on("disconnect", async(e) => {
+        results = await controllers.leaveRoom({ params: { idPlayer: socket.id } });
+        isHost = results.rows.is_host;
+        idRoomToDelete = results.rows.id_room;
         console.log("- user disconnected: " + users[socket.id].name);
         socket.broadcast.emit("player quit", "");
-        if (results.rows[0].is_host) {
+        if (results.rows.is_host) {
             controllers.kickAll({ params: { idRoom: idRoomToDelete } });
         }
+    });
+
+    socket.on("init join", (id_room) => {
+        queries.joinRoomDB(socket.id, id_room)
+        socket.broadcast.emit("player join");
     });
 
     socket.on("start game", (data) => {
