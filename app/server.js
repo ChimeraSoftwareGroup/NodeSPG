@@ -1,16 +1,19 @@
 // Require variable for the server
 import express from "express";
 
-import gameRoutes from "./app/routes/games";
-import roomRoutes from "./app/routes/rooms";
-
-const bodyParser = require("body-parser");
+import gameRoutes from "./routes/games.js";
+import roomRoutes from "./routes/rooms.js";
+import bodyParser from "body-parser";
+import {
+    leaveRoom,
+    kickAll,
+    postInfoPlayer,
+    getAllOtherPlayerInRoom,
+} from "./controller/controllers.js";
 const app = express();
 const port = 3000;
-const controllers = require("./app/controller/controllers");
-const { Server } = require("socket.io");
-const handler = require("./app/handler/handler.js");
-const queries = require("./app/handler/queries.js");
+import { Server } from "socket.io";
+import { deleteRoomDB, joinRoomDB } from "./handler/queries.js";
 
 app.use(bodyParser.json());
 app.use(
@@ -47,23 +50,22 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", async (e) => {
         socket.broadcast.emit("player quit");
-        let results = await controllers.leaveRoom({
+        let results = await leaveRoom({
             params: { idPlayer: socket.id },
         });
         let isHost = results.rows[0].is_host;
         let idRoomToDelete = results.rows[0].id_room;
         console.log("- user disconnected: " + socket.id);
         if (isHost) {
-            // console.log("|", socket.id, ":", user);
-            controllers.kickAll({ params: { idRoom: idRoomToDelete } });
+            kickAll({ params: { idRoom: idRoomToDelete } });
             console.log("- deleting all the players");
             socket.broadcast.emit("delete room");
-            queries.deleteRoomDB(idRoomToDelete);
+            deleteRoomDB(idRoomToDelete);
         }
     });
 
     socket.on("init join", (id_room) => {
-        queries.joinRoomDB(socket.id, id_room);
+        joinRoomDB(socket.id, id_room);
         socket.broadcast.emit("player join");
     });
 
@@ -74,22 +76,7 @@ io.on("connection", (socket) => {
 
     //Check if a player left the room
     //If the player was an host, make everybody leave
-    socket.on("quit room", async () => {
-        socket.broadcast.emit("player quit");
-        let results = await controllers.leaveRoom({
-            params: { idPlayer: socket.id },
-        });
-        let isHost = results.rows[0].is_host;
-        let idRoomToDelete = results.rows[0].id_room;
-        console.log("- user disconnected: " + socket.id);
-        if (isHost) {
-            // console.log("|", socket.id, ":", user);
-            controllers.kickAll({ params: { idRoom: idRoomToDelete } });
-            console.log("- deleting all the players");
-            socket.broadcast.emit("delete room");
-            queries.deleteRoomDB(idRoomToDelete);
-        }
-    });
+    socket.on("quit room", () => socket.disconnect(true));
 
     //Get all values from socket
     //Get all player in one room with the function
@@ -99,11 +86,11 @@ io.on("connection", (socket) => {
     //Return all ending information to the player
     socket.on("ending game", (userScore) => {
         const { nbLifeLeft, nbGamesPlayed } = userScore;
-        let listIdPlayer = controllers.getAllOtherPlayerInRoom({
+        let listIdPlayer = getAllOtherPlayerInRoom({
             params: { id_player },
         });
         let position = handler.countNull(listIdPlayer);
-        controllers.postInfoPlayer({
+        postInfoPlayer({
             params: { nbLifeLeft, nbGamesPlayed, position },
         });
 
@@ -115,7 +102,7 @@ io.on("connection", (socket) => {
         }
 
         //position == 1
-        listIdPlayer = controllers.getAllOtherPlayerInRoom({
+        listIdPlayer = getAllOtherPlayerInRoom({
             params: { id_player },
         });
         for (let index = 0; index < listIdPlayer.length; index++) {
@@ -131,3 +118,5 @@ io.on("connection", (socket) => {
         }
     });
 });
+
+export default app;

@@ -1,8 +1,18 @@
 import express from "express";
 
-import { getAllPlayerInRoom, addRoom, joinRoom, updateRoom, deleteRoom, leaveRoom, kickAll, getInfoPlayer, postInfoPlayer } from "../controller/controllers";
+import {
+    getAllPlayerInRoom,
+    addRoom,
+    joinRoom,
+    updateRoom,
+    deleteRoom,
+    leaveRoom,
+    kickAll,
+    getInfoPlayer,
+    postInfoPlayer,
+} from "../controller/controllers.js";
 
-const router = express.Router();
+export const router = express.Router();
 
 router.post("/", (req, res) => {
     handler.returnApi(req, res, addRoom);

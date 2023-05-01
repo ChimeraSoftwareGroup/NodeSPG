@@ -1,8 +1,8 @@
 import express from "express";
 
-import { getGames } from "../controller/controllers";
+import { getGames } from "../controller/controllers.js";
 
-const router = express.Router();
+export const router = express.Router();
 
 router.get("/", (req, res) => {
     handler.returnApi(req, res, getGames);

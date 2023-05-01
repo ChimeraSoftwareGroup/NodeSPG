@@ -1,12 +1,12 @@
 // Will generate a 4 random digit number for the password
-function createPassword() {
+export function createPassword() {
     var password = Math.floor(1000 + Math.random() * 9000);
     return password;
 }
 
 // This will give you a list of none same following numbers of minigames between two value
 const aze = countGames(5, 20, 10);
-function countGames(min, max, count) {
+export function countGames(min, max, count) {
     const arrayGames = [];
     let previousNum = null;
     for (let i = 0; i < count; i++) {
@@ -21,7 +21,7 @@ function countGames(min, max, count) {
 }
 
 //counting remaining players in the game
-function countNull(list) {
+export function countNull(list) {
     let count = 0;
     for (let index = 0; index < list.length; index++) {
         const element = list[index];
@@ -32,15 +32,7 @@ function countNull(list) {
     return count;
 }
 
-async function returnApi(request, response, callBack) {
+export async function returnApi(request, response, callBack) {
     const results = await callBack(request);
     response.status(200).json(results);
 }
-
-// Return the password
-module.exports = {
-    createPassword,
-    returnApi,
-    countGames,
-    countNull,
-};
