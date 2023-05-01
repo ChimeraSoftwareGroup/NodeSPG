@@ -1,12 +1,16 @@
 // Require variable for the server
-const express = require("express");
+import express from "express";
+
+import gameRoutes from "./app/routes/games";
+import roomRoutes from "./app/routes/rooms";
+
 const bodyParser = require("body-parser");
 const app = express();
 const port = 3000;
-const controllers = require("./app/routes/controllers");
+const controllers = require("./app/controller/controllers");
 const { Server } = require("socket.io");
-const handler = require("./app/handler.js");
-const queries = require("./app/queries.js");
+const handler = require("./app/handler/handler.js");
+const queries = require("./app/handler/queries.js");
 
 app.use(bodyParser.json());
 app.use(
@@ -15,64 +19,22 @@ app.use(
     })
 );
 
+// Where the server is running
+const server = app.listen(port, () => {
+    console.log(`App running on port ${port}.`);
+});
+
 // First page of our server route
 app.get("/", (request, response) => {
     response.json({ info: "Node.js, Express, and Postgres API" });
 });
 
 // Call api
-app.get("/games", (req, res) => {
-    handler.returnApi(req, res, controllers.getGames);
-});
-app.get("/games/random", (req, res) => {
-    res.status(500).send({ id: 2, name: "test" });
-});
-app.get("/room/:id/players", (req, res) => {
-    handler.returnApi(req, res, controllers.getAllPlayerInRoom);
-});
-app.post("/room", (req, res) => {
-    handler.returnApi(req, res, controllers.addRoom);
-});
-app.post("/room/join", (req, res) => {
-    handler.returnApi(req, res, controllers.joinRoom);
-});
-app.get("/data/:id/players", (req, res) => {
-    handler.returnApi(req, res, controllers.getInfoPlayer);
-});
-app.post("/data/:id/players", (req, res) => {
-    handler.returnApi(req, res, controllers.postInfoPlayer);
-});
-app.get("/randomGames", (req, res) => {
-    handler.returnApi(req, res, controllers.randomGames);
-});
-
-//Debug for Unity -- Need improvement
-app.post("/room/password", (req, res) => {
-    handler.returnApi(req, res, () => {
-        return true;
-    });
-});
-app.put("/room/:id", (req, res) => {
-    handler.returnApi(req, res, controllers.updateRoom);
-});
-app.delete("/room/:id", (req, res) => {
-    handler.returnApi(req, res, controllers.deleteRoom);
-});
-app.delete("/room/players/:idPlayer/leave", (req, res) => {
-    handler.returnApi(req, res, controllers.leaveRoom);
-});
-
-app.delete("/room/players/:idRoom/all", (req, res) => {
-    handler.returnApi(req, res, controllers.kickAll);
-});
+app.use("/games", gameRoutes);
+app.use("/rooms", roomRoutes);
 
 app.get("/socket", (req, res) => {
     res.sendFile(__dirname + "/index.html");
-});
-
-// Where the server is running
-const server = app.listen(port, () => {
-    console.log(`App running on port ${port}.`);
 });
 
 const io = new Server(server);
@@ -84,12 +46,10 @@ io.on("connection", (socket) => {
     console.log(`+ a user (${socket.id}) connected`);
 
     socket.on("disconnect", async (e) => {
-        results = await controllers.leaveRoom({
-            params: { idPlayer: socket.id },
-        });
-        isHost = results.rows.is_host;
-        idRoomToDelete = results.rows.id_room;
-        console.log("- user disconnected: " + users[socket.id].name);
+        const results = await queries.leaveRoomDB(socket.id);
+        const isHost = results.rows.is_host;
+        const idRoomToDelete = results.rows.id_room;
+        console.log("- user disconnected: " + socket.id);
         socket.broadcast.emit("player quit", "");
         if (results.rows.is_host) {
             controllers.kickAll({ params: { idRoom: idRoomToDelete } });
@@ -102,7 +62,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("start game", (data) => {
-        console.log("|", users[socket.id].name, ":", data);
+        console.log("|", socket.id, ":", data);
         socket.broadcast.emit("start game", data);
     });
 
@@ -115,9 +75,9 @@ io.on("connection", (socket) => {
         });
         let isHost = results.rows[0].is_host;
         let idRoomToDelete = results.rows[0].id_room;
-        console.log("- user disconnected: " + users[socket.id].name);
+        console.log("- user disconnected: " + socket.id);
         if (isHost) {
-            // console.log("|", users[socket.id].name, ":", user);
+            // console.log("|", socket.id, ":", user);
             controllers.kickAll({ params: { idRoom: idRoomToDelete } });
             console.log("- deleting all the players");
             socket.broadcast.emit("delete room");

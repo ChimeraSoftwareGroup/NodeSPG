@@ -1,6 +1,6 @@
-const { createPassword, countGames } = require("../handler");
-const db = require("../queries");
-require("../handler");
+const { createPassword, countGames } = require("../handler/handler");
+const db = require("../handler/queries");
+require("../handler/handler");
 
 // Return all games
 async function getGames(request) {
