@@ -46,13 +46,19 @@ io.on("connection", (socket) => {
     console.log(`+ a user (${socket.id}) connected`);
 
     socket.on("disconnect", async (e) => {
-        const results = await queries.leaveRoomDB(socket.id);
-        const isHost = results.rows.is_host;
-        const idRoomToDelete = results.rows.id_room;
+        socket.broadcast.emit("player quit");
+        let results = await controllers.leaveRoom({
+            params: { idPlayer: socket.id },
+        });
+        let isHost = results.rows[0].is_host;
+        let idRoomToDelete = results.rows[0].id_room;
         console.log("- user disconnected: " + socket.id);
-        socket.broadcast.emit("player quit", "");
-        if (results.rows.is_host) {
+        if (isHost) {
+            // console.log("|", socket.id, ":", user);
             controllers.kickAll({ params: { idRoom: idRoomToDelete } });
+            console.log("- deleting all the players");
+            socket.broadcast.emit("delete room");
+            queries.deleteRoomDB(idRoomToDelete);
         }
     });
 
