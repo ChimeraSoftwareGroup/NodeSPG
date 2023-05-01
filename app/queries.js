@@ -73,8 +73,8 @@ const getRoomByPassword = (password) => {
 const joinRoomDB = (id_player, id_room) => {
     return pool.query(
         `INSERT INTO player_room (id_player, id_room, is_host) values
-    ($1, $2, (case when exists (select * from player_room) then false else true end))`,
-        [id_player, id_room]
+    ($1, $2, (case when exists (select * from player_room WHERE id_room = $3) then false else true end))`,
+        [id_player, id_room, id_room]
     );
 };
 

@@ -83,8 +83,10 @@ io.on("connection", (socket) => {
     users[socket.id] = { name: socket.id };
     console.log(`+ a user (${socket.id}) connected`);
 
-    socket.on("disconnect", async(e) => {
-        results = await controllers.leaveRoom({ params: { idPlayer: socket.id } });
+    socket.on("disconnect", async (e) => {
+        results = await controllers.leaveRoom({
+            params: { idPlayer: socket.id },
+        });
         isHost = results.rows.is_host;
         idRoomToDelete = results.rows.id_room;
         console.log("- user disconnected: " + users[socket.id].name);
@@ -95,7 +97,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("init join", (id_room) => {
-        queries.joinRoomDB(socket.id, id_room)
+        queries.joinRoomDB(socket.id, id_room);
         socket.broadcast.emit("player join");
     });
 
@@ -106,10 +108,9 @@ io.on("connection", (socket) => {
 
     //Check if a player left the room
     //If the player was an host, make everybody leave
-    socket.on("quit room", () => {
-        controllers.leaveRoom({ params: { idPlayer: socket.id } }, "");
+    socket.on("quit room", async () => {
         socket.broadcast.emit("player quit");
-        let results = controllers.leaveRoom({
+        let results = await controllers.leaveRoom({
             params: { idPlayer: socket.id },
         });
         let isHost = results.rows[0].is_host;
@@ -118,7 +119,9 @@ io.on("connection", (socket) => {
         if (isHost) {
             // console.log("|", users[socket.id].name, ":", user);
             controllers.kickAll({ params: { idRoom: idRoomToDelete } });
+            console.log("- deleting all the players");
             socket.broadcast.emit("delete room");
+            queries.deleteRoomDB(idRoomToDelete);
         }
     });
 
