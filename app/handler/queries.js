@@ -18,10 +18,7 @@ export function getGamesDB() {
 
 // Create a room
 export function addRoomDB(name, password) {
-    return pool.query(
-        `INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id`,
-        [name, password]
-    );
+    return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id`, [name, password]);
 }
 
 // Delete a room
@@ -64,9 +61,7 @@ export function leaveRoomDB(id_player) {
 
 // Get a scpecific room by using an existance password
 export function getRoomByPassword(password) {
-    return pool.query(`SELECT * FROM room as R WHERE R.password = $1`, [
-        password,
-    ]);
+    return pool.query(`SELECT * FROM room as R WHERE R.password = $1`, [password]);
 }
 
 // Join a room as a player
@@ -99,15 +94,10 @@ export function getInfoPlayerDB(id_room) {
 
 // This will post position/pv_left and nmb of minigame
 export function postInfoPlayerDB(pv_left, nmb_minigame) {
-    return pool.query(
-        `INSERT INTO player_room (pv_left, nmb_minigame) VALUES ($1, $2) RETURNING id`,
-        [pv_left, nmb_minigame]
-    );
+    return pool.query(`INSERT INTO player_room (pv_left, nmb_minigame) VALUES ($1, $2) RETURNING id`, [pv_left, nmb_minigame]);
 }
 
 // This will get all players id in the room
 export function getAllOtherPlayerInRoomDB(id_player) {
-    return pool.query(`SELECT INTO player_room (id_player) VALUES ($1)`, [
-        id_player,
-    ]);
+    return pool.query(`SELECT INTO player_room (id_player) VALUES ($1)`, [id_player]);
 }
