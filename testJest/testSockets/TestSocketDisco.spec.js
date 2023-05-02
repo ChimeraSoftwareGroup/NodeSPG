@@ -1,4 +1,4 @@
-import { addRoomDB } from "../app/handler/queries.js";
+import { addRoomDB } from "../../app/handler/queries.js";
 import { connect } from "socket.io-client";
 
 test('test socket "start game" event', async () => {

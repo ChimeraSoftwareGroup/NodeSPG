@@ -1,5 +1,5 @@
 import { connect } from "socket.io-client";
-import { countGames } from "../app/handler.js";
+import { countGames } from "../../app/handler.js";
 
 test('test socket "start game" event', (done) => {
     const client1 = connect("http://localhost:3000");

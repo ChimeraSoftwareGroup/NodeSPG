@@ -1,4 +1,4 @@
-import { addRoom, deleteRoom } from "../app/routes/controllers";
+import { addRoom, deleteRoom } from "../../app/routes/controllers";
 
 // room that exist name:"roomTest" / that don't exist id:-9999
 

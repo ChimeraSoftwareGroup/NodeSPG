@@ -1,7 +1,7 @@
 import {
     joinRoom as _joinRoom,
     leaveRoom as _leaveRoom,
-} from "../app/routes/controllers";
+} from "../../app/routes/controllers";
 
 // id_player that exist -99 / that don't exist -98
 // idRoom that exist -99
