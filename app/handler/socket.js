@@ -1,4 +1,9 @@
-import { leaveRoom, kickAll, postInfoPlayer, getAllOtherPlayerInRoom } from "../controller/controllers.js";
+import {
+    leaveRoomDB,
+    kickAllDB,
+    postInfoPlayerDB,
+    getAllOtherPlayerInRoomDB,
+} from "./queries.js";
 
 class SocketManager {
     constructor(socket) {
@@ -7,7 +12,7 @@ class SocketManager {
 
     async onDisconnected() {
         this.socket.broadcast.emit("player quit");
-        let results = await leaveRoom({
+        let results = await leaveRoomDB({
             params: { idPlayer: this.socket.id },
         });
         let isHost = results.rows[0].is_host;
@@ -15,7 +20,7 @@ class SocketManager {
         let idRoomToDelete = results.rows[0].id_room;
         console.log("- user disconnected: " + this.socket.id);
         if (isHost) {
-            kickAll({ params: { idRoom: idRoomToDelete } });
+            kickAllDB({ params: { idRoom: idRoomToDelete } });
             console.log("- deleting all the players");
             this.socket.broadcast.emit("delete room");
             deleteRoomDB(idRoomToDelete);
@@ -34,11 +39,11 @@ class SocketManager {
 
     async endingGame(userScore) {
         const { nbLifeLeft, nbGamesPlayed } = userScore;
-        let listIdPlayer = await getAllOtherPlayerInRoom({
+        let listIdPlayer = await getAllOtherPlayerInRoomDB({
             params: { id_player },
         });
         let position = handler.countNull(listIdPlayer);
-        postInfoPlayer({
+        postInfoPlayerDB({
             params: { nbLifeLeft, nbGamesPlayed, position },
         });
 
@@ -50,7 +55,7 @@ class SocketManager {
         }
 
         //position == 1
-        listIdPlayer = await getAllOtherPlayerInRoom({
+        listIdPlayer = await getAllOtherPlayerInRoomDB({
             params: { id_player },
         });
         for (let index = 0; index < listIdPlayer.length; index++) {
