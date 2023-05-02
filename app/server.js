@@ -1,24 +1,20 @@
 // Require variable for the server
 import express from "express";
-import {
-    onDisconnected,
-    startGame,
-    initJoin,
-    endingGame,
-} from "./handler/socket.js";
+import SocketManager from "./handler/socket.js";
 import gameRoutes from "./routes/games.js";
 import roomRoutes from "./routes/rooms.js";
 import bodyParser from "body-parser";
-import {
-    leaveRoom,
-    kickAll,
-    postInfoPlayer,
-    getAllOtherPlayerInRoom,
-} from "./controller/controllers.js";
 const app = express();
 const port = 3000;
 import { Server } from "socket.io";
-import { deleteRoomDB, joinRoomDB } from "./handler/queries.js";
+
+//#region define __dirname
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+//#endregion
 
 app.use(bodyParser.json());
 app.use(
@@ -50,20 +46,15 @@ const io = new Server(server);
 var users = {};
 
 io.on("connection", (socket) => {
+    const socketManager = new SocketManager(socket);
     users[socket.id] = { name: socket.id };
     console.log(`+ a user (${socket.id}) connected`);
 
-    socket.on("disconnect", async (e) => {
-        onDisconnected(socket);
-    });
+    socket.on("disconnect", () => socketManager.onDisconnected());
 
-    socket.on("init join", (id_room) => {
-        initJoin(socket, id_room);
-    });
+    socket.on("init join", (id_room) => socketManager.initJoin(id_room));
 
-    socket.on("start game", (data) => {
-        startGame(socket, data);
-    });
+    socket.on("start game", (data) => socketManager.onStartGame(data));
 
     //Check if a player left the room
     //If the player was an host, make everybody leave
@@ -75,9 +66,7 @@ io.on("connection", (socket) => {
     //Post the information in the DB
     //Send the last data from player 2
     //Return all ending information to the player
-    socket.on("ending game", (userScore) => {
-        endingGame(socket, userScore);
-    });
+    socket.on("ending game", (userScore) => socketManager.endingGame(userScore));
 });
 
 export default app;
