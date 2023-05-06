@@ -1,16 +1,6 @@
 import express from "express";
 import { returnApi } from "../handler/handler.js";
-import {
-    getAllPlayerInRoom,
-    addRoom,
-    joinRoom,
-    updateRoom,
-    deleteRoom,
-    leaveRoom,
-    kickAll,
-    getInfoPlayer,
-    postInfoPlayer,
-} from "../controller/controllers.js";
+import { getAllPlayerInRoom, addRoom, joinRoom, updateRoom, deleteRoom, leaveRoom, kickAll, getInfoPlayer, postInfoPlayer, getRoomByPassword } from "../controller/controllers.js";
 
 export const router = express.Router();
 
@@ -23,9 +13,7 @@ router.post("/join", (req, res) => {
 
 //Debug for Unity -- Need improvement
 router.post("/password", (req, res) => {
-    returnApi(req, res, () => {
-        return true;
-    });
+    returnApi(req, res, getRoomByPassword);
 });
 router.put("/:id", (req, res) => {
     returnApi(req, res, updateRoom);

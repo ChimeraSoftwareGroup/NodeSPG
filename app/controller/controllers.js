@@ -12,6 +12,7 @@ import {
     getInfoPlayerDB,
     postInfoPlayerDB,
     getAllOtherPlayerInRoomDB,
+    getRoomByPasswordDB,
 } from "../handler/queries.js";
 
 // Return all games
@@ -40,22 +41,27 @@ export async function addRoom(request) {
 
 // Will delete a room by id
 export async function deleteRoom(request) {
-    const id = parseInt(request.params.id);
-    const results = await deleteRoomDB(id);
+    const { id } = request.params;
+    const results = await deleteRoomDB(parseInt(id));
     return results.rowCount;
+}
+
+export async function getRoomByPassword(request) {
+    const { password } = request.params;
+    return await getRoomByPasswordDB(password);
 }
 
 // Return the modified rooms'id
 export async function updateRoom(request) {
-    const id = parseInt(request.params.id);
+    const { id } = request.params;
     const { name } = request.body;
-    const results = await updateRoomDB(name, id);
+    const results = await updateRoomDB(name, parseInt(id));
     return results;
 }
 
 // Return all players in a room
 export async function getAllPlayerInRoom(request) {
-    const { id } = request.params.id;
+    const { id } = request.params;
     const results = await getAllPlayerInRoomDB(id);
     return results;
 }

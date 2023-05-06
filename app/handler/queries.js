@@ -99,5 +99,15 @@ export function postInfoPlayerDB(pv_left, nmb_minigame) {
 
 // This will get all players id in the room
 export function getAllOtherPlayerInRoomDB(id_player) {
-    return pool.query(`SELECT INTO player_room (id_player) VALUES ($1)`, [id_player]);
+    return pool.query(
+        `SELECT * FROM player_room 
+        WHERE id_player IS NOT $1 AND id_room IN (
+            SELECT id_room FROM player_room WHERE id_player = $2
+        )`,
+        [id_player, id_player]
+    );
+}
+
+export function getRoomByPasswordDB(password) {
+    return pool.query(`SELECT * FROM room WHERE password = $1`, [password]);
 }
