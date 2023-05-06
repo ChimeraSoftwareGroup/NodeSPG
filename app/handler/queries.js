@@ -18,7 +18,7 @@ export function getGamesDB() {
 
 // Create a room
 export function addRoomDB(name, password) {
-    return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id`, [name, password]);
+    return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id, password`, [name, password]);
 }
 
 // Delete a room
