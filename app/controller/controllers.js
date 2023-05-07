@@ -32,8 +32,8 @@ export async function addRoom(request) {
         length = room.rows.length;
     }
     // Will create the room
-    const { name, minIDGame, manIDGame, nbGame } = request.body;
-    const randomGames = countGames(minIDGame, manIDGame, nbGame);
+    const { name, minIDGame, maxIDGame, nbGame } = request.body;
+    const randomGames = countGames(minIDGame, maxIDGame, nbGame);
     const results = await addRoomDB(name, password);
     return { room: results, gameList: randomGames };
 }
