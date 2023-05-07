@@ -1,4 +1,5 @@
-import { leaveRoomDB, kickAllDB, postInfoPlayerDB, getAllOtherPlayerInRoomDB } from "./queries.js";
+import { deleteRoomDB, leaveRoomDB, kickAllDB, postInfoPlayerDB, getAllOtherPlayerInRoomDB, joinRoomDB } from "./queries.js";
+import { countNull } from "./handler.js";
 
 class SocketManager {
     constructor(socket, io) {
@@ -35,7 +36,7 @@ class SocketManager {
     async endingGame(userScore) {
         const { nbLifeLeft, nbGamesPlayed } = userScore;
         const listIdPlayer = await getAllOtherPlayerInRoomDB(this.socket.id);
-        const position = handler.countNull(listIdPlayer);
+        const position = countNull(listIdPlayer);
         postInfoPlayerDB(nbLifeLeft, nbGamesPlayed);
 
         if (position > 2) return;
