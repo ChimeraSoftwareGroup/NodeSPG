@@ -96,7 +96,7 @@ export function postInfoPlayerDB(pv_left, nmb_minigame) {
 export function getAllOtherPlayerInRoomDB(id_player) {
     return pool.query(
         `SELECT * FROM player_room 
-        WHERE id_player IS NOT $1 AND id_room IN (
+        WHERE id_player NOT LIKE $1 AND id_room IN (
             SELECT id_room FROM player_room WHERE id_player = $2
         )`,
         [id_player, id_player]
