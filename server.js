@@ -1,8 +1,8 @@
 // Require variable for the server
 import express from "express";
-import SocketManager from "./handler/socket.js";
-import gameRoutes from "./routes/games.js";
-import roomRoutes from "./routes/rooms.js";
+import SocketManager from "./app/handler/socket.js";
+import gameRoutes from "./app/routes/games.js";
+import roomRoutes from "./app/routes/rooms.js";
 import bodyParser from "body-parser";
 const app = express();
 const port = process.env.port || 3000;
