@@ -6,7 +6,6 @@ import {
     updateRoomDB,
     getAllPlayerInRoomDB,
     joinRoomDB,
-    getRoomByPassword,
     leaveRoomDB,
     kickAllDB,
     getInfoPlayerDB,
@@ -29,7 +28,7 @@ export async function addRoom(request) {
     while (length != 0) {
         // Will call the function to create a random password
         password = createPassword();
-        let room = await getRoomByPassword(password);
+        let room = await getRoomByPasswordDB(password);
         length = room.rows.length;
     }
     // Will create the room
@@ -76,7 +75,7 @@ export async function leaveRoom(request) {
 // Will join an exesting room, and define the host
 export async function joinRoom(request) {
     const { id_player, password } = request.body;
-    const dataRoom = await getRoomByPassword(password);
+    const dataRoom = await getRoomByPasswordDB(password);
     if (dataRoom.rows.length != 0) {
         const results = await joinRoomDB(id_player, dataRoom.rows[0].id);
         return results;

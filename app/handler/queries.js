@@ -59,11 +59,6 @@ export function leaveRoomDB(id_player) {
     );
 }
 
-// Get a scpecific room by using an existance password
-export function getRoomByPassword(password) {
-    return pool.query(`SELECT * FROM room as R WHERE R.password = $1`, [password]);
-}
-
 // Join a room as a player
 // Define if your are the host of the room (first or second one)
 export function joinRoomDB(id_player, id_room) {
