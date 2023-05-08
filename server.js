@@ -5,7 +5,7 @@ import gameRoutes from "./app/routes/games.js";
 import roomRoutes from "./app/routes/rooms.js";
 import bodyParser from "body-parser";
 const app = express();
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 import { Server } from "socket.io";
 
 //#region define __dirname
@@ -66,7 +66,9 @@ io.on("connection", (socket) => {
     //Post the information in the DB
     //Send the last data from player 2
     //Return all ending information to the player
-    socket.on("ending game", (userScore) => socketManager.endingGame(userScore));
+    socket.on("ending game", (userScore) =>
+        socketManager.endingGame(userScore)
+    );
 });
 
 export default app;
