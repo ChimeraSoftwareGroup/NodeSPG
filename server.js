@@ -5,7 +5,7 @@ import gameRoutes from "./app/routes/games.js";
 import roomRoutes from "./app/routes/rooms.js";
 import bodyParser from "body-parser";
 const app = express();
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 import { Server } from "socket.io";
 
 //#region define __dirname
