@@ -46,7 +46,7 @@ export async function deleteRoom(request) {
 }
 
 export async function getRoomByPassword(request) {
-    const { password } = request.params;
+    const { password } = request.body;
     return await getRoomByPasswordDB(password);
 }
 
