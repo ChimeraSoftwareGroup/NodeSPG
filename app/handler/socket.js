@@ -37,27 +37,14 @@ class SocketManager {
         const { nbLifeLeft, nbGamesPlayed } = userScore;
         const listIdPlayer = await getAllPlayerInRoomDB(this.socket.id);
         const position = countNull(listIdPlayer);
-        postInfoPlayerDB(nbLifeLeft, nbGamesPlayed);
-
-        if (position > 2) return;
+        setHasLostPlayer();
 
         if (position == 2 && nbLifeLeft == 0) {
             this.messageAll("send last data");
-            return;
         }
 
         //position == 1
-
-        this.messageAll("end game", (user) => {
-            return {
-                user_score: {
-                    nbGamesPlayed: user.nmb_minigame ?? nbGamesPlayed,
-                    nbLifeLeft: user.pv_left ?? nbLifeLeft,
-                },
-                user_position: user.position ?? position,
-                highscore: userScore,
-            };
-        });
+        this.io.to(this.socket.id).emit(action, { user_position: position });
     }
 
     async messageAll(
