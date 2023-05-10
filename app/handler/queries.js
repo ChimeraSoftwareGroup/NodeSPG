@@ -89,7 +89,7 @@ export function getAllPlayerInRoomDB(id_player) {
     return pool.query(
         `SELECT * FROM player_room 
         WHERE id_room IN (
-            SELECT id_room FROM player_room WHERE id_player = $2
+            SELECT id_room FROM player_room WHERE id_player = $1
         )`,
         [id_player]
     );

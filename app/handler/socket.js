@@ -1,4 +1,11 @@
-import { deleteRoomDB, leaveRoomDB, kickAllDB, postInfoPlayerDB, getAllPlayerInRoomDB, joinRoomDB } from "./queries.js";
+import {
+    deleteRoomDB,
+    leaveRoomDB,
+    kickAllDB,
+    postInfoPlayerDB,
+    getAllPlayerInRoomDB,
+    joinRoomDB,
+} from "./queries.js";
 import { countNull } from "./handler.js";
 
 class SocketManager {
@@ -60,17 +67,24 @@ class SocketManager {
         });
     }
 
-    messageAll(
+    async messageAll(
         action,
         message = (elt) => {
             return "";
         }
     ) {
-        const listPlayer = getAllPlayerInRoomDB(this.socket.id);
+        const listPlayer = await getAllPlayerInRoomDB(this.socket.id);
         console.log("|-- Emit all --|");
-        for (let i = 0; i < listPlayer.length; i++) {
-            console.log("   | Send message to (" + this.socket.id + ") -> " + message(listPlayer[i]));
-            this.io.to(this.socket.id).emit(action, message(listPlayer[i]));
+        for (let i = 0; i < listPlayer.rows.length; i++) {
+            console.log(
+                "   | Send message to (" +
+                    this.socket.id +
+                    ") -> " +
+                    message(listPlayer.rows[i])
+            );
+            this.io
+                .to(this.socket.id)
+                .emit(action, message(listPlayer.rows[i]));
         }
     }
 }
