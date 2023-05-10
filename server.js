@@ -50,25 +50,29 @@ io.on("connection", (socket) => {
     users[socket.id] = { name: socket.id };
     console.log(`+ a user (${socket.id}) connected`);
 
-    socket.on("disconnect", () => socketManager.onDisconnected());
+    try {
+        socket.on("disconnect", () => socketManager.onDisconnected());
 
-    socket.on("init join", (id_room) => socketManager.initJoin(id_room));
+        socket.on("init join", (id_room) => socketManager.initJoin(id_room));
 
-    socket.on("start game", (data) => socketManager.onStartGame(data));
+        socket.on("start game", (data) => socketManager.onStartGame(data));
 
-    //Check if a player left the room
-    //If the player was an host, make everybody leave
-    socket.on("quit room", () => socket.disconnect(true));
+        //Check if a player left the room
+        //If the player was an host, make everybody leave
+        socket.on("quit room", () => socket.disconnect(true));
 
-    //Get all values from socket
-    //Get all player in one room with the function
-    //Define position
-    //Post the information in the DB
-    //Send the last data from player 2
-    //Return all ending information to the player
-    socket.on("ending game", (userScore) =>
-        socketManager.endingGame(userScore)
-    );
+        //Get all values from socket
+        //Get all player in one room with the function
+        //Define position
+        //Post the information in the DB
+        //Send the last data from player 2
+        //Return all ending information to the player
+        socket.on("ending game", (userScore) =>
+            socketManager.endingGame(userScore)
+        );
+    } catch (error) {
+        io.to(socket.id).emit("socket error", error);
+    }
 });
 
 export default app;
