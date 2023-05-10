@@ -10,7 +10,7 @@ import {
     kickAllDB,
     getInfoPlayerDB,
     postInfoPlayerDB,
-    getAllOtherPlayerInRoomDB,
+    getAllPlayerInRoomDB,
     getRoomByPasswordDB,
 } from "../handler/queries.js";
 
@@ -109,7 +109,7 @@ export async function postInfoPlayer(request) {
 // This will get all players id in the room
 export async function getAllOtherPlayerInRoom(request) {
     const { id_player } = request.params;
-    const results = await getAllOtherPlayerInRoomDB(id_player);
+    const results = await getAllPlayerInRoomDB(id_player);
     return results;
 }
 
