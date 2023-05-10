@@ -47,7 +47,9 @@ export async function deleteRoom(request) {
 
 export async function getRoomByPassword(request) {
     const { password } = request.body;
-    return await getRoomByPasswordDB(password);
+    const results = await getRoomByPasswordDB(password);
+    if (results.rows.length == 0) throw new Exception("No Room was found");
+    return results.rows[0];
 }
 
 // Return the modified rooms'id
