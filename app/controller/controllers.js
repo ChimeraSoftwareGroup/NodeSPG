@@ -4,7 +4,6 @@ import {
     addRoomDB,
     deleteRoomDB,
     updateRoomDB,
-    getAllPlayerInRoomDB,
     joinRoomDB,
     leaveRoomDB,
     kickAllDB,
@@ -35,7 +34,10 @@ export async function addRoom(request) {
     const { name, minIDGame, maxIDGame, nbGame } = request.body;
     const randomGames = countGames(minIDGame, maxIDGame, nbGame);
     const results = await addRoomDB(name, password);
-    return { room: { rows: results.rows, rowCount: results.rowCount }, gameList: randomGames };
+    return {
+        room: { rows: results.rows, rowCount: results.rowCount },
+        gameList: randomGames,
+    };
 }
 
 // Will delete a room by id

@@ -18,7 +18,10 @@ export function getGamesDB() {
 
 // Create a room
 export function addRoomDB(name, password) {
-    return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id, password`, [name, password]);
+    return pool.query(
+        `INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id, password`,
+        [name, password]
+    );
 }
 
 // Delete a room
@@ -33,20 +36,6 @@ export function deleteRoomDB(id) {
 // Update the room name
 export function updateRoomDB(name, id) {
     return pool.query(`UPDATE room SET name = $1 WHERE id = $2`, [name, id]);
-}
-
-// Getting all players in a room
-// Defined alias
-// Select all players in a specific room
-export function getAllPlayerInRoomDB(id) {
-    return pool.query(
-        `SELECT PL.id, PL.name, PI.link as picture  
-        FROM player_room as PR 
-        LEFT JOIN player as PL ON PR.id_player = PL.id  
-        LEFT JOIN picture as PI ON PL.id_picture = PI.id
-        WHERE PR.id_room = $1`,
-        [id]
-    );
 }
 
 // Leaving a room as a player
@@ -89,7 +78,10 @@ export function getInfoPlayerDB(id_room) {
 
 // This will post position/pv_left and nmb of minigame
 export function postInfoPlayerDB(pv_left, nmb_minigame) {
-    return pool.query(`INSERT INTO player_room (pv_left, nmb_minigame) VALUES ($1, $2) RETURNING id`, [pv_left, nmb_minigame]);
+    return pool.query(
+        `INSERT INTO player_room (pv_left, nmb_minigame) VALUES ($1, $2) RETURNING id`,
+        [pv_left, nmb_minigame]
+    );
 }
 
 // This will get all players id in the room
