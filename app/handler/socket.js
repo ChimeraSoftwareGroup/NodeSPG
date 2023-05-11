@@ -5,6 +5,7 @@ import {
     setHasLostPlayer,
     getAllPlayerInRoomDB,
     joinRoomDB,
+    getPlayerRoomBySocketID,
 } from "./queries.js";
 import { countNull } from "./handler.js";
 
@@ -16,15 +17,17 @@ class SocketManager {
 
     async onDisconnected() {
         this.messageAll("player quit");
-        let results = await leaveRoomDB(this.socket.id);
-        let isHost = results.rows[0].is_host;
-        let idRoomToDelete = results.rows[0].id_room;
+        let player = await getPlayerRoomBySocketID(this.socket.id);
+        let isHost = player.rows[0].is_host;
+        let idRoomToDelete = player.rows[0].id_room;
         console.log("- user disconnected: " + this.socket.id);
         if (isHost) {
-            kickAllDB(idRoomToDelete);
             console.log("- deleting all the players");
-            this.messageAll("delete room");
+            await this.messageAll("delete room");
+            await kickAllDB(idRoomToDelete);
             deleteRoomDB(idRoomToDelete);
+        } else {
+            await leaveRoomDB(this.socket.id);
         }
     }
 
@@ -43,7 +46,7 @@ class SocketManager {
     async endingGame(userScore) {
         const { nbLifeLeft, nbGamesPlayed } = userScore;
         const listIdPlayer = await getAllPlayerInRoomDB(this.socket.id);
-        const position = countNull(listIdPlayer);
+        const position = countNull(listIdPlayer.rows);
         setHasLostPlayer(this.socket.id);
 
         if (position == 2 && nbLifeLeft == 0) {
@@ -51,7 +54,9 @@ class SocketManager {
         }
 
         //position == 1
-        this.io.to(this.socket.id).emit(action, { user_position: position });
+        this.io
+            .to(this.socket.id)
+            .emit("end game", { user_position: position });
     }
 
     async messageAll(
@@ -67,12 +72,15 @@ class SocketManager {
                 "   | Send message to (" +
                     listPlayer.rows[i].id_player +
                     ") -> " +
+                    action +
+                    ": " +
                     message(listPlayer.rows[i])
             );
             this.io
                 .to(listPlayer.rows[i].id_player)
                 .emit(action, message(listPlayer.rows[i]));
         }
+        console.log("-----------------------------------------");
     }
 }
 

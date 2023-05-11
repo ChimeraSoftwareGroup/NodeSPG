@@ -43,7 +43,7 @@ export function updateRoomDB(name, id) {
 export function leaveRoomDB(id_player) {
     return pool.query(
         `DELETE FROM player_room as PR 
-        WHERE PR.id_player = $1 RETURNING is_host, id_room`,
+        WHERE PR.id_player = $1 RETURNING PR.is_host, PR.id_room`,
         [id_player]
     );
 }
@@ -79,7 +79,7 @@ export function getInfoPlayerDB(id_room) {
 // This will post position/pv_left and nmb of minigame
 export function setHasLostPlayer(id_player) {
     return pool.query(
-        `UPGRADE player_room SET has_lost = $1 WHERE id_player = $2`,
+        `UPDATE player_room SET has_lost = $1 WHERE id_player = $2`,
         [true, id_player]
     );
 }
@@ -97,4 +97,8 @@ export function getAllPlayerInRoomDB(id_player) {
 
 export function getRoomByPasswordDB(password) {
     return pool.query(`SELECT * FROM room WHERE password = $1`, [password]);
+}
+
+export function getPlayerRoomBySocketID(id) {
+    return pool.query(`SELECT * FROM player_room WHERE id_player = $1`, [id]);
 }

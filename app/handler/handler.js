@@ -6,7 +6,6 @@ export function createPassword() {
 
 // This will give you a list of none same following numbers of minigames between two value
 export function countGames(min, max, count) {
-    console.log(min, max, count);
     min = parseInt(min) ?? min;
     max = parseInt(max) ?? max;
     count = parseInt(count) ?? count;
@@ -29,7 +28,7 @@ export function countNull(list) {
     let count = 0;
     for (let index = 0; index < list.length; index++) {
         const element = list[index];
-        if (element.pv_left == undefined && element.nmb_minigame == undefined) {
+        if (!element.has_lost) {
             count++;
         }
     }

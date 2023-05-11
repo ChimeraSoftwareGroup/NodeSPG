@@ -67,7 +67,9 @@ io.on("connection", (socket) => {
         //Post the information in the DB
         //Send the last data from player 2
         //Return all ending information to the player
-        socket.on("ending game", (userScore) => socketManager.endingGame(userScore));
+        socket.on("ending game", (userScore) =>
+            socketManager.endingGame(userScore)
+        );
     } catch (error) {
         io.to(socket.id).emit("socket error", error);
     }
