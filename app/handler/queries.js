@@ -52,7 +52,7 @@ export function leaveRoomDB(id_player) {
 // Define if your are the host of the room (first or second one)
 export function joinRoomDB(id_player, id_room) {
     return pool.query(
-        `INSERT INTO player_room (id_player, id_room, is_host) values
+        `INSERT INTO player_room (id_player, id_room, is_host, has_lost) values
     ($1, $2, (case when exists (select * from player_room WHERE id_room = $3) then false else true end),  false)`,
         [id_player, id_room, id_room]
     );
