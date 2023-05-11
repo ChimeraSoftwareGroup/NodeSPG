@@ -18,7 +18,10 @@ export function getGamesDB() {
 
 // Create a room
 export function addRoomDB(name, password) {
-    return pool.query(`INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id, password`, [name, password]);
+    return pool.query(
+        `INSERT INTO room (name, password) VALUES ($1, $2) RETURNING id, password`,
+        [name, password]
+    );
 }
 
 // Delete a room
@@ -74,8 +77,11 @@ export function getInfoPlayerDB(id_room) {
 }
 
 // This will post position/pv_left and nmb of minigame
-export function setHasLostPlayer() {
-    return pool.query(`INSERT INTO player_room (has_lost) VALUES ($1) RETURNING id`, [true]);
+export function setHasLostPlayer(id_player) {
+    return pool.query(
+        `UPGRADE player_room SET has_lost = $1 WHERE id_player = $2`,
+        [true, id_player]
+    );
 }
 
 // This will get all players id in the room

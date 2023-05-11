@@ -1,4 +1,11 @@
-import { deleteRoomDB, leaveRoomDB, kickAllDB, postInfoPlayerDB, getAllPlayerInRoomDB, joinRoomDB } from "./queries.js";
+import {
+    deleteRoomDB,
+    leaveRoomDB,
+    kickAllDB,
+    setHasLostPlayer,
+    getAllPlayerInRoomDB,
+    joinRoomDB,
+} from "./queries.js";
 import { countNull } from "./handler.js";
 
 class SocketManager {
@@ -37,7 +44,7 @@ class SocketManager {
         const { nbLifeLeft, nbGamesPlayed } = userScore;
         const listIdPlayer = await getAllPlayerInRoomDB(this.socket.id);
         const position = countNull(listIdPlayer);
-        setHasLostPlayer();
+        setHasLostPlayer(this.socket.id);
 
         if (position == 2 && nbLifeLeft == 0) {
             this.messageAll("send last data");
@@ -56,8 +63,15 @@ class SocketManager {
         const listPlayer = await getAllPlayerInRoomDB(this.socket.id);
         console.log("|-- Emit all --|");
         for (let i = 0; i < listPlayer.rows.length; i++) {
-            console.log("   | Send message to (" + listPlayer.rows[i].id_player + ") -> " + message(listPlayer.rows[i]));
-            this.io.to(listPlayer.rows[i].id_player).emit(action, message(listPlayer.rows[i]));
+            console.log(
+                "   | Send message to (" +
+                    listPlayer.rows[i].id_player +
+                    ") -> " +
+                    message(listPlayer.rows[i])
+            );
+            this.io
+                .to(listPlayer.rows[i].id_player)
+                .emit(action, message(listPlayer.rows[i]));
         }
     }
 }
