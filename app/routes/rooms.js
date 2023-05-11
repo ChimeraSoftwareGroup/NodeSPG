@@ -1,6 +1,16 @@
 import express from "express";
 import { returnApi } from "../handler/handler.js";
-import { getAllPlayerInRoom, addRoom, joinRoom, updateRoom, deleteRoom, leaveRoom, kickAll, getInfoPlayer, postInfoPlayer, getRoomByPassword } from "../controller/controllers.js";
+import {
+    getAllPlayerInRoom,
+    addRoom,
+    joinRoom,
+    updateRoom,
+    deleteRoom,
+    leaveRoom,
+    kickAll,
+    getInfoPlayer,
+    getRoomByPassword,
+} from "../controller/controllers.js";
 
 export const router = express.Router();
 
@@ -29,9 +39,6 @@ router.delete("/:id/players", (req, res) => {
 });
 router.get("/players/:id/", (req, res) => {
     returnApi(req, res, getInfoPlayer);
-});
-router.post("/players/:id/", (req, res) => {
-    returnApi(req, res, postInfoPlayer);
 });
 router.delete("/players/:idPlayer/leave", (req, res) => {
     returnApi(req, res, leaveRoom);
