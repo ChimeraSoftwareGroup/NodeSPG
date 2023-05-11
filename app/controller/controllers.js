@@ -8,7 +8,6 @@ import {
     leaveRoomDB,
     kickAllDB,
     getInfoPlayerDB,
-    postInfoPlayerDB,
     getAllPlayerInRoomDB,
     getRoomByPasswordDB,
 } from "../handler/queries.js";
@@ -98,13 +97,6 @@ export async function kickAll(request) {
 export async function getInfoPlayer(request) {
     const { idRoom } = request.params;
     const results = await getInfoPlayerDB(idRoom);
-    return results;
-}
-
-// This will post position/pv_left and nmb of minigame
-export async function postInfoPlayer(request) {
-    const { pv_left, nmb_minigame } = request.body;
-    const results = await postInfoPlayerDB(pv_left, nmb_minigame);
     return results;
 }
 
