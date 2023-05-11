@@ -1,45 +1,33 @@
 import {
-    joinRoom as _joinRoom,
-    leaveRoom as _leaveRoom,
-} from "../../app/routes/controllers";
+    joinRoomDB as _joinRoomDB,
+    leaveRoomDB as _leaveRoomDB,
+} from "../../app/handler/queries";
 
 // id_player that exist -99 / that don't exist -98
-// idRoom that exist -99
-// password that exist -1234 / that don't exist -1235
-
+// idRoom that exist -99 / that don't exist -98
 describe("add a player in a room that exist and make him leave", function () {
     test("add a player in a room that exist and make him leave", async () => {
-        const joinRoom = await _joinRoom(
-            { body: { id_player: -99, password: -1234 } },
-            true
-        );
-        expect(joinRoom.rowCount).toBe(1);
-        const leaveRoom = await _leaveRoom(
-            { params: { idPlayer: -99, idRoom: -99 } },
-            true
-        );
-        expect(leaveRoom.rowCount).toBe(1);
+        const joinRoomDB = await _joinRoomDB(-99, -99);
+        expect(joinRoomDB.rowCount).toBe(1);
+        const leaveRoomDB = await _leaveRoomDB(-99);
+        expect(leaveRoomDB.rowCount).toBe(1);
     });
 });
 
 describe("add an inexistante player in a room that exist", function () {
     test("add an inexistante player in a room that exist", async () => {
-        try {
-            const joinRoom = await _joinRoom(
-                { body: { id_player: -98, password: -1234 } },
-                true
-            );
-            expect(joinRoom).toThrowError;
-        } catch (error) {}
+        const joinRoomDB = await _joinRoomDB(-98, -99);
+        expect(joinRoomDB).toThrowError;
+        const leaveRoomDB = await _leaveRoomDB(-98);
+        expect(leaveRoomDB.rowCount).toBe(1);
     });
 });
 
 describe("add an existante player in a room that do not exist", function () {
     test("add an existante player in a room that do not exist", async () => {
-        const joinRoom = await _joinRoom(
-            { body: { id_player: -99, password: -1235 } },
-            true
-        );
-        expect(joinRoom).toThrowError;
+        try {
+            const joinRoomDB = await _joinRoomDB(-99, -98);
+            expect(joinRoomDB).toThrowError;
+        } catch (error) {}
     });
 });

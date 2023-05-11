@@ -19,7 +19,6 @@ export function countGames(min, max, count) {
         arrayGames.push(randomGames);
         previousNum = randomGames;
     }
-    console.log(arrayGames);
     return arrayGames;
 }
 
